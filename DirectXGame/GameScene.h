@@ -24,9 +24,16 @@ private:
 	// カメラ
 	Camera camera_;
 
+	WorldTransform worldTransform_;
+
 	Input* input_ = nullptr;
 
 	Model* modelPlayer_ = nullptr;
 
 	Player* player_ = nullptr;
+
+	Model* modelBlock_ = nullptr;
+
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+
 };
