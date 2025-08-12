@@ -1,6 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
 #include "Player.h"
+#include "MapChipField.h"
 
 using namespace KamataEngine;
 
@@ -20,6 +21,8 @@ public:
 	// 描画
 	void Draw();
 
+	void GenerateBlocks();
+
 private:
 	// カメラ
 	Camera camera_;
@@ -35,5 +38,7 @@ private:
 	Model* modelBlock_ = nullptr;
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+
+	MapChipField* mapChipField_;
 
 };
