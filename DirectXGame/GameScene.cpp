@@ -67,8 +67,6 @@ void GameScene::Draw() {
 
 	Model::PreDraw();
 
-	player_->Draw(camera_);
-
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
 			if (!worldTransformBlockYoko)
@@ -77,6 +75,8 @@ void GameScene::Draw() {
 			modelBlock_->Draw(*worldTransformBlockYoko, camera_);
 		}
 	}
+
+	player_->Draw(camera_);
 
 	Model::PostDraw();
 
