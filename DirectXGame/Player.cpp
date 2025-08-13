@@ -1,17 +1,22 @@
-
 #include "Player.h"
+#include <algorithm>
+#include <numbers>
 
 using namespace KamataEngine;
 
 Player::~Player() {}
 
-void Player::Initialize(Model* model) {
+void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 
 	assert(model);
 
 	model_ = model;
 
 	worldTransform_.Initialize();
+
+	worldTransform_.translation_ = position;
+
+	camera;
 
 	worldTransform_.rotation_.y = 3.14159f / 2.0f;
 
@@ -20,26 +25,66 @@ void Player::Initialize(Model* model) {
 
 void Player::Update() {
 
-	// キャラクターの移動ベクトル
-	Vector3 move = {0, 0, 0};
+	if (Input::GetInstance()->PushKey(DIK_D) || Input::GetInstance()->PushKey(DIK_A)) {
+	
+	Vector3 acceleration = {};
 
-	// キャラクターの移動速度
-	const float kCharacterSpeed = 0.2f;
+	if (Input::GetInstance()->PushKey(DIK_D)) {
+	
+		if (lrDirection_ != LRDirection::kRight) {
+		
+			lrDirection_ = LRDirection::kRight;
+		
+		}
 
-	// 押した方向で移動ベクトルを変更(左右)
-	if (input_->PushKey(DIK_A)) {
+		if (velocity_.x < 0.0f) {
+		
+			velocity_.x *= (1.0f - kAcceleration);
+		
+		}
 
-		move.x -= kCharacterSpeed;
+	acceleration.x += kAcceleration;
+	
+	} else if (Input::GetInstance()->PushKey(DIK_A)) {
+	
+		if (lrDirection_ != LRDirection::kLeft) {
+		
+			lrDirection_ = LRDirection::kLeft;
+		
+		}
+
+			if (velocity_.x > 0.0f) {
+
+			velocity_.x *= (1.0f - kAcceleration);
+		}
+
+
+	acceleration.x -= kAcceleration;
+	
+	}
+	
+	velocity_.x += acceleration.x;
+
+	velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+
+	} else {
+	
+	velocity_.x *= (1.0f - kAcceleration);
+	
 	}
 
-	if (input_->PushKey(DIK_D)) {
+	float destinationRotationYTable[] = {
 
-		move.x += kCharacterSpeed;
-	}
+	    std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> * 3.0f / 2.0f
 
-	// 座標移動
-	worldTransform_.translation_.x += move.x;
-	worldTransform_.translation_.y += move.y;
+	};
+
+	float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
+
+	worldTransform_.rotation_.y = destinationRotationY;
+
+	worldTransform_.translation_.x += velocity_.x;
+	worldTransform_.translation_.y += velocity_.y;
 
 	worldTransform_.TransferMatrix();
 	worldTransform_.UpdateMatrix();
