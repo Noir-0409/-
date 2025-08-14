@@ -36,4 +36,10 @@ private:
 
 	LRDirection lrDirection_ = LRDirection::kRight;
 
+	float turnFirstRotationY_ = 0.0f;
+
+	float turnTimer_ = 0.0f;
+
+	static inline const float kTimeTurn = 0.3f;
+
 };
