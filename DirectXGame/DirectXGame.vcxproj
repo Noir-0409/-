@@ -158,6 +158,7 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChipField.cpp" />
+    <ClCompile Include="MathUtillity.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="WorldTransformEX.cpp" />
   </ItemGroup>
@@ -262,6 +263,7 @@
     <ClInclude Include="Affin.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="MapChipField.h" />
+    <ClInclude Include="MathUtillity.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
