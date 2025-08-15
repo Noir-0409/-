@@ -19,27 +19,29 @@ GameScene::~GameScene() {
 void GameScene::Initialize() {
 
 	modelPlayer_ = Model::CreateFromOBJ("Player");
-
 	modelBlock_ = Model::CreateFromOBJ("block");
 
-	// カメラの初期化
+	mapChipField_ = new MapChipField();
+	mapChipField_->LoadMapChipCSV("Resources/map.csv");
+
 	camera_.Initialize();
 
-	player_ = new Player();
-
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	player_ = new Player();
+	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 
-	player_->Initialize(modelPlayer_,&camera_,playerPosition);
+	cameraController_ = new CameraController();
+	cameraController_->SetCamera(&camera_);
+	cameraController_->SetTarget(player_);
+	cameraController_->Initialize();
+	cameraController_->Reset();
 
 	input_ = Input::GetInstance();
 
 	worldTransform_.Initialize();
 
-	mapChipField_ = new MapChipField;
-
-	mapChipField_->LoadMapChipCSV("Resources/map.csv");
-
 	GenerateBlocks();
+
 
 }
 
@@ -54,6 +56,8 @@ for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks
 			worldTransformBlockYoko->UpdateMatrix();
 		}
 	}
+
+cameraController_->Update();
 
 }
 

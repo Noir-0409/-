@@ -21,6 +21,8 @@ public:
 
 	void Draw(Camera& camera);
 
+	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
+
 private:
 	WorldTransform worldTransform_;
 
