@@ -1,3 +1,5 @@
+﻿#define NOMINMAX
+
 #include "CameraController.h"
 #include "Player.h"
 #include "MathUtillity.h"
@@ -15,6 +17,11 @@ void CameraController::Update() {
 	camera_->translation_.x = targetWorldTransform.translation_.x + targetOffset_.x;
 	camera_->translation_.y = targetWorldTransform.translation_.y + targetOffset_.y;
 	camera_->translation_.z = targetWorldTransform.translation_.z + targetOffset_.z;
+
+	camera_->translation_.x = std::max(camera_->translation_.x, movableArea_.left);
+	camera_->translation_.x = std::min(camera_->translation_.x, movableArea_.right);
+	camera_->translation_.y = std::max(camera_->translation_.y, movableArea_.bottom);
+	camera_->translation_.y = std::min(camera_->translation_.y, movableArea_.top);
 
 	camera_->UpdateMatrix();
 
