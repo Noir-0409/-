@@ -40,4 +40,8 @@ Vector3 targetOffset_ = {0, 0, -15.0f};
 
 Rect movableArea_ = {0, 100, 0, 100};
 
+Vector3 targetPosition_;
+
+static inline const float kInterpolationRate_ = 0.3f;
+
 };
