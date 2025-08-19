@@ -44,4 +44,8 @@ Vector3 targetPosition_;
 
 static inline const float kInterpolationRate_ = 0.3f;
 
+static inline const float kVeloicityBias = 0.5f;
+
+static inline const Rect margin_ = {-8.0f, 8.0f, -8.0f, 8.0f};
+
 };
