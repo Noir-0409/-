@@ -15,6 +15,26 @@ enum class LRDirection {
 class Player {
 
 public:
+
+	struct CollisionMapInfo {
+
+		bool ceiling = false;
+		bool landing = false;
+		bool hitwall = false;
+		Vector3 move;
+	};
+
+	enum Corner {
+
+		kRightBottom,
+		kLeftBottom,
+		kRightTop,
+		kLeftTop,
+
+		kNumCorner // 要素数
+
+	};
+
 	~Player();
 
 	void Initialize(Model* model, Camera* camera, const Vector3& position);
@@ -30,6 +50,20 @@ public:
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 
 	void InputMove();
+
+	void CollisionMove(const CollisionMapInfo& info);
+
+	void CheckMapCollision(CollisionMapInfo& info);
+
+	void CheckMapCollisionUp(CollisionMapInfo& info);
+
+	//void CheckMapCollisionDown(CollisionMapInfo& info);
+
+	//void CheckMapCollisionLeft(CollisionMapInfo& info);
+
+	//void CheckMapCollisionRight(CollisionMapInfo& info);
+
+	Vector3 CornerPosition(const Vector3& center, Corner corner);
 
 private:
 	WorldTransform worldTransform_;
@@ -61,5 +95,7 @@ private:
 
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
+
+	static inline const float kBlank = 0.04f;
 
 };

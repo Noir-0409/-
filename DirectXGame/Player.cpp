@@ -1,9 +1,10 @@
 #define NOMINMAX
 
 #include "Player.h"
+#include "MathUtillity.h"
 #include <algorithm>
 #include <numbers>
-#include "MathUtillity.h"
+#include "MapChipField.h"
 
 using namespace KamataEngine;
 
@@ -32,7 +33,13 @@ void Player::Update() {
 	worldTransform_.TransferMatrix();
 
 	InputMove();
-	
+
+	CollisionMapInfo collisionMapInfo;
+
+	collisionMapInfo.move = velocity_;
+
+	CheckMapCollision(collisionMapInfo);
+
 	// 行列計算
 	worldTransform_.UpdateMatrix();
 	worldTransform_.TransferMatrix();
@@ -202,6 +209,94 @@ void Player::InputMove() {
 			onGround_ = true;
 		}
 	}
+}
 
+void Player::CollisionMove(const CollisionMapInfo& info) {
 
+	worldTransform_.translation_ += info.move;
+
+}
+
+void Player::CheckMapCollision(CollisionMapInfo& info) { CheckMapCollisionUp(info); }
+
+void Player::CheckMapCollisionUp(CollisionMapInfo& info) {
+
+	if (info.move.y <= 0) {
+	
+	return;
+	
+	}
+
+	std::array<Vector3, kNumCorner> positionsNew;
+
+	// 移動後の中心座標を計算
+	Vector3 center;
+	center.x = worldTransform_.translation_.x + info.move.x;
+	center.y = worldTransform_.translation_.y + info.move.y;
+	center.z = worldTransform_.translation_.z + info.move.z;
+
+	// 各コーナーの位置を計算
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(center, static_cast<Corner>(i));
+	}
+
+	MapChipType mapChipType;
+
+	bool hit = false;
+
+	MapChipField::IndexSet indexSet;
+
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+
+	if (mapChipType == MapChipType::kBlock) {
+	
+		hit = true;
+	
+	}
+
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+
+	if (mapChipType == MapChipType::kBlock) {
+
+		hit = true;
+
+	}
+
+	if (hit) {
+	
+		//indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_.y + (kHeight / 2.0f));
+		Vector3 pos = worldTransform_.translation_;
+		pos.y += kHeight / 2.0f;
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(pos);
+		
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+	
+		info.move.y = std::max(0.0f, rect.bottom - worldTransform_.translation_.y - (kHeight / 2.0f + kBlank));
+
+		info.ceiling = true;
+	
+	}
+
+		if (info.ceiling) {
+
+		DebugText::GetInstance()->ConsolePrintf("hit\n");
+
+		velocity_.y = 0;
+	}
+
+}
+
+Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
+
+	Vector3 offsetTable[kNumCorner] = {
+
+	    {+kWidth / 2.0f, -kHeight / 2.0f, 0},
+	    {-kWidth / 2.0f, -kHeight / 2.0f, 0},
+	    {+kWidth / 2.0f, +kHeight / 2.0f, 0},
+	    {-kWidth / 2.0f, +kHeight / 2.0f, 0},
+	};
+
+	return Vector3(center.x + offsetTable[static_cast<uint32_t>(corner)].x, center.y + offsetTable[static_cast<uint32_t>(corner)].y, center.z + offsetTable[static_cast<uint32_t>(corner)].z);
 }
