@@ -57,13 +57,15 @@ public:
 
 	void CheckMapCollisionUp(CollisionMapInfo& info);
 
-	//void CheckMapCollisionDown(CollisionMapInfo& info);
+	void CheckMapCollisionDown(CollisionMapInfo& info);
 
 	//void CheckMapCollisionLeft(CollisionMapInfo& info);
 
 	//void CheckMapCollisionRight(CollisionMapInfo& info);
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
+
+	void UpdateOnGround(const CollisionMapInfo& info);
 
 private:
 	WorldTransform worldTransform_;
@@ -97,5 +99,9 @@ private:
 	static inline const float kHeight = 0.8f;
 
 	static inline const float kBlank = 0.04f;
+
+	static inline const float kAttenuationLanding = 0.0f;
+
+	static inline const float kGroundSearchHeight = 0.05f;
 
 };
